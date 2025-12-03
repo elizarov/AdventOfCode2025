@@ -6,7 +6,7 @@ fun main() {
         var prev = -1
         val str = buildString {
             for (j in 1..k) {
-                val (i, a) = s.substring(prev + 1).dropLast(k - j).toCharArray().withIndex().maxBy { it.value }
+                val (i, a) = s.substring(prev + 1).dropLast(k - j).withIndex().maxBy { it.value }
                 append(a)
                 prev += i + 1
             }
