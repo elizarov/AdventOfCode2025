@@ -1,4 +1,7 @@
-import kotlin.math.abs
+import java.awt.image.*
+import java.io.*
+import javax.imageio.*
+import kotlin.math.*
 
 private const val U = 1
 private const val D = 2
@@ -84,11 +87,12 @@ fun main() {
                     'v' -> { c = ' '; inside = !inside }
                 }
             }
-            if (wasX || inside || c != ' ') a[x][y] = 'X'
+            if ((wasX || inside || c != ' ') && a[x][y] == ' ') a[x][y] = 'X'
         }
         check(!inside)
     }
     dump()
+    dumpPng(a, "Day09.png")
     for (i in 0..<n) for (j in i + 1..<n) {
         val xi = xm[p[i].x]!!
         val xj = xm[p[j].x]!!
@@ -99,7 +103,7 @@ fun main() {
         val y1 = minOf(yi, yj)
         val y2 = maxOf(yi, yj)
         var ok = true
-        check@for (x in x1..x2) for (y in y1..y2) if (a[x][y] != 'X') {
+        check@for (x in x1..x2) for (y in y1..y2) if (a[x][y] == ' ') {
             ok = false
             break@check
         }
@@ -109,4 +113,19 @@ fun main() {
         }
     }
     println(ans)
+}
+
+fun dumpPng(a: Array<CharArray>, fileName: String) {
+    val (m, n) = a.size2()
+    val img = BufferedImage(m, n, BufferedImage.TYPE_INT_RGB)
+    for (x in 0..<m) for(y in 0..<n) {
+        val c = when (a[x][y]) {
+            'v', '^' -> 0xff0000 // red
+            'X' -> 0x00ff00 // green
+            '-', '|' -> 0x007f00 // light green
+            else -> 0xffffff // white
+        }
+        img.setRGB(x, y, c)
+    }
+    ImageIO.write(img, "png", File(fileName))
 }
